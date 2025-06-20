@@ -22,7 +22,7 @@ t_eval = np.linspace(0, T, n_points)
 noise_level = st.sidebar.slider("Observation Noise Level", 0.0, 0.2, 0.05, step=0.01)
 n_calls = st.sidebar.slider("Number of BO Calls", 10, 50, 30)
 
-if node_type == "Exponential Decay":
+if ode_type == "Exponential Decay":
     st.header("Exponential Decay ODE")
     true_theta = st.sidebar.slider("True theta (decay rate)", 0.1, 2.0, 0.5)
 
@@ -37,7 +37,7 @@ if node_type == "Exponential Decay":
 
     space = [Real(0.01, 2.0, name='theta')]
 
-elif node_type == "SIR Epidemic Model":
+elif ode_type == "SIR Epidemic Model":
     st.header("SIR Model")
     true_beta = st.sidebar.slider("True beta", 0.01, 1.0, 0.3)
     true_gamma = st.sidebar.slider("True gamma", 0.01, 1.0, 0.1)
@@ -64,7 +64,7 @@ if st.button("Run Bayesian Optimization"):
         st.success("Optimization Complete!")
 
         fig, ax = plt.subplots(figsize=(10, 5))
-        if node_type == "Exponential Decay":
+        if ode_type == "Exponential Decay":
             best_theta = result.x[0]
             best_model = ExponentialDecayModel(best_theta, T, t_eval)
             best_y = best_model.simulate()
@@ -74,7 +74,7 @@ if st.button("Run Bayesian Optimization"):
             ax.plot(t_eval, best_y, label=f"Estimated (θ={best_theta:.3f})")
             st.subheader(f"Best Estimated θ: {best_theta:.4f}")
 
-        elif node_type == "SIR Epidemic Model":
+        elif ode_type == "SIR Epidemic Model":
             best_beta, best_gamma = result.x
             est_model = SIRModel(best_beta, best_gamma, y0, T, t_eval)
             _, I_est, _ = est_model.simulate()
